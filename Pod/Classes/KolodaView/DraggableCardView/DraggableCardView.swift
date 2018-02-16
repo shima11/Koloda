@@ -69,7 +69,7 @@ public class DraggableCardView: UIView, UIGestureRecognizerDelegate {
     private var animationDirectionY: CGFloat = 1.0
     private var dragBegin = false
     private var dragDistance = CGPoint.zero
-    private var swipePercentageMargin: CGFloat = 0.3
+    private var swipePercentageMargin: CGFloat = 0.4
 
     
     //MARK: Lifecycle
@@ -87,17 +87,7 @@ public class DraggableCardView: UIView, UIGestureRecognizerDelegate {
         super.init(frame: frame)
         setup()
     }
-    
-    override public var frame: CGRect {
-        didSet {
-            if let ratio = delegate?.card(cardSwipeThresholdRatioMargin: self) , ratio != 0 {
-                swipePercentageMargin = ratio
-            } else {
-                swipePercentageMargin = 1.0
-            }
-        }
-    }
-    
+
     deinit {
         removeGestureRecognizer(panGestureRecognizer)
         removeGestureRecognizer(tapGestureRecognizer)
@@ -249,11 +239,8 @@ public class DraggableCardView: UIView, UIGestureRecognizerDelegate {
         case .changed:
             let rotationStrength = min(dragDistance.x / frame.width, rotationMax)
             let rotationAngle = animationDirectionY * self.rotationAngle * rotationStrength
-//            let scaleStrength = 1 - ((1 - scaleMin) * fabs(rotationStrength))
-//            let scale = max(scaleStrength, scaleMin)
 
             var transform = CATransform3DIdentity
-//            transform = CATransform3DScale(transform, scale, scale, 1)
             transform = CATransform3DRotate(transform, rotationAngle, 0, 0, 1)
             transform = CATransform3DTranslate(transform, dragDistance.x, dragDistance.y, 0)
             layer.transform = transform
@@ -266,7 +253,6 @@ public class DraggableCardView: UIView, UIGestureRecognizerDelegate {
             }
             
         case .ended:
-//            swipeMadeAction()
             swipeMadeAction(gestureVelocity: gestureRecognizer.velocity(in: gestureRecognizer.view))
 
             layer.shouldRasterize = false
@@ -369,7 +355,15 @@ public class DraggableCardView: UIView, UIGestureRecognizerDelegate {
         a.springSpeed = 1.0
         a.springBounciness = 4
         a.fromValue = NSValue(cgPoint: POPLayerGetTranslationXY(layer))
-        a.toValue = NSValue(cgPoint: CGPoint(x: direction.point.x * (screenSize.width + 100), y: POPLayerGetTranslationXY(layer).y))
+        let d = gestureVelocity.distanceTo(.zero)
+        let to: CGPoint
+        if d > screenSize.height {
+            let r = (screenSize.width + 100) / abs(gestureVelocity.x)
+            to = CGPoint(x: gestureVelocity.x * r, y: gestureVelocity.y * r + screenSize.height)
+        } else {
+            to = CGPoint(x: 0, y: screenSize.height)
+        }
+        a.toValue = NSValue(cgPoint: to)
         a.completionBlock = { _, _ in
             self.removeFromSuperview()
         }
