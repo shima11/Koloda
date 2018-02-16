@@ -46,7 +46,7 @@ public protocol KolodaViewDelegate: class {
     
     func koloda(_ koloda: KolodaView, allowedDirectionsForIndex index: Int) -> [SwipeResultDirection]
     func koloda(_ koloda: KolodaView, shouldSwipeCardAt index: Int, in direction: SwipeResultDirection) -> Bool
-    func koloda(_ koloda: KolodaView, didSwipeCardAt index: Int, in direction: SwipeResultDirection)
+    func koloda(_ koloda: KolodaView, didSwipeCardAt index: Int, in direction: SwipeResultDirection, by way: SwipeWay)
     func kolodaDidRunOutOfCards(_ koloda: KolodaView)
     func koloda(_ koloda: KolodaView, didSelectCardAt index: Int)
     func kolodaShouldApplyAppearAnimation(_ koloda: KolodaView) -> Bool
@@ -64,7 +64,7 @@ public extension KolodaViewDelegate {
     
     func koloda(_ koloda: KolodaView, shouldSwipeCardAt index: Int, in direction: SwipeResultDirection) -> Bool { return true }
     func koloda(_ koloda: KolodaView, allowedDirectionsForIndex index: Int) -> [SwipeResultDirection] { return [.left, .right] }
-    func koloda(_ koloda: KolodaView, didSwipeCardAt index: Int, in direction: SwipeResultDirection) {}
+    func koloda(_ koloda: KolodaView, didSwipeCardAt index: Int, in direction: SwipeResultDirection, by way: SwipeWay) {}
     func kolodaDidRunOutOfCards(_ koloda: KolodaView) {}
     func koloda(_ koloda: KolodaView, didSelectCardAt index: Int) {}
     func kolodaShouldApplyAppearAnimation(_ koloda: KolodaView) -> Bool { return true }
@@ -297,8 +297,8 @@ open class KolodaView: UIView, DraggableCardDelegate {
         return delegate?.koloda(self, allowedDirectionsForIndex: index) ?? [.left, .right]
     }
     
-    func card(_ card: DraggableCardView, wasSwipedIn direction: SwipeResultDirection) {
-        swipedAction(direction)
+    func card(_ card: DraggableCardView, wasSwipedIn direction: SwipeResultDirection, wasSwipedby way: SwipeWay) {
+        swipedAction(direction, way: way)
     }
     
     func card(cardWasReset card: DraggableCardView) {
@@ -359,7 +359,7 @@ open class KolodaView: UIView, DraggableCardDelegate {
     }
     
     // MARK: Actions
-    private func swipedAction(_ direction: SwipeResultDirection) {
+    private func swipedAction(_ direction: SwipeResultDirection, way: SwipeWay) {
         animationSemaphore.increment()
         visibleCards.removeFirst()
         
@@ -377,12 +377,12 @@ open class KolodaView: UIView, DraggableCardDelegate {
                 
                 _self.visibleCards.last?.isHidden = false
                 _self.animationSemaphore.decrement()
-                _self.delegate?.koloda(_self, didSwipeCardAt: _self.currentCardIndex - 1, in: direction)
+                _self.delegate?.koloda(_self, didSwipeCardAt: _self.currentCardIndex - 1, in: direction, by: way)
                 _self.delegate?.koloda(_self, didShowCardAt: _self.currentCardIndex)
             }
         } else {
             animationSemaphore.decrement()
-            delegate?.koloda(self, didSwipeCardAt: self.currentCardIndex - 1, in: direction)
+            delegate?.koloda(self, didSwipeCardAt: self.currentCardIndex - 1, in: direction, by: way)
             delegate?.kolodaDidRunOutOfCards(self)
         }
     }

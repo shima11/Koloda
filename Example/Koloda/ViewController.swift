@@ -69,6 +69,11 @@ extension ViewController: KolodaViewDelegate {
 
 }
 
+func kolodaSwipeThresholdRatioMargin(_ koloda: KolodaView) -> CGFloat? {
+    
+    return 0.3
+}
+
 // MARK: KolodaViewDataSource
 
 extension ViewController: KolodaViewDataSource {

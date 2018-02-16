@@ -15,6 +15,7 @@
 		C517E4F21D9D00520002D88F /* KolodaViewAnimatior.swift in Sources */ = {isa = PBXBuildFile; fileRef = C517E4E81D9D00520002D88F /* KolodaViewAnimatior.swift */; };
 		C517E4F31D9D00520002D88F /* OverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C517E4EA1D9D00520002D88F /* OverlayView.swift */; };
 		C517E4F41D9D00520002D88F /* SwipeResultDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C517E4EB1D9D00520002D88F /* SwipeResultDirection.swift */; };
+		D4CF67192036FF3200410567 /* pop.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C517E4F81D9D01920002D88F /* pop.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4CF67192036FF3200410567 /* pop.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,6 +147,7 @@
 				C517E4A71D9CF9010002D88F /* Frameworks */,
 				C517E4A81D9CF9010002D88F /* Headers */,
 				C517E4A91D9CF9010002D88F /* Resources */,
+				D4CF671A2036FF3600410567 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -196,6 +199,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D4CF671A2036FF3600410567 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/pop.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C517E4A61D9CF9010002D88F /* Sources */ = {
