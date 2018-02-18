@@ -357,12 +357,26 @@ public class DraggableCardView: UIView, UIGestureRecognizerDelegate {
         a.fromValue = NSValue(cgPoint: POPLayerGetTranslationXY(layer))
         let d = gestureVelocity.distanceTo(.zero)
         let to: CGPoint
-        if d > screenSize.height {
+        if d > screenSize.height / 2 {
             let r = (screenSize.width + 100) / abs(gestureVelocity.x)
-            to = CGPoint(x: gestureVelocity.x * r, y: gestureVelocity.y * r + screenSize.height)
+            to = CGPoint(x: gestureVelocity.x * r, y: gestureVelocity.y * r)
         } else {
-            to = CGPoint(x: 0, y: screenSize.height)
-        }
+            switch direction{
+            case .bottomLeft:
+                to = CGPoint(x: -screenSize.width * 2, y: screenSize.height)
+            case .left:
+                to = CGPoint(x: -screenSize.width * 2, y: 0)
+            case .topLeft:
+                to = CGPoint(x: -screenSize.width * 2, y: -screenSize.height)
+            case .bottomRight:
+                to = CGPoint(x: screenSize.width * 2, y: screenSize.height)
+            case .right:
+                to = CGPoint(x: screenSize.width * 2, y: 0)
+            case .topRight:
+                to = CGPoint(x: screenSize.width * 2, y: -screenSize.height)
+            default:
+                to = CGPoint(x: 0, y: screenSize.height)
+            }        }
         a.toValue = NSValue(cgPoint: to)
         a.completionBlock = { _, _ in
             self.removeFromSuperview()
